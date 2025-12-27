@@ -98,12 +98,13 @@ Scope {
           fontFamily: root.theme.fontStyle
           textColor: root.theme.defaultTextColor
           textBorderColor: root.theme.textBorderColor
+          backgroundColor: root.theme.primaryColor
         }
         //spacer
-        Item {
-         implicitHeight: 20
+        //Item {
+         //implicitHeight: 20
         
-        }
+        //}
         
       }
       

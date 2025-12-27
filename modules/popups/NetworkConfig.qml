@@ -71,7 +71,8 @@ Item{
                 }
                 Item{ Layout.fillWidth: true}
                 PopupButton{
-                    height: 3
+                    Layout.preferredHeight: 20
+
                     text: "Disconnect"
                     onClicked: {
                         NetworkManager.changeConnection(modelData) 
@@ -96,7 +97,8 @@ Item{
                 }
                 Item{ Layout.fillWidth: true}
                 PopupButton{
-                    height: 3
+                    Layout.preferredHeight: 20
+
                     text: "Connect"
                     onClicked: {
                         NetworkManager.changeConnection(modelData) 
@@ -168,7 +170,8 @@ Item{
                         Text { text: modelData.bars }
                         Item{ Layout.fillWidth: true}
                         PopupButton {
-                            height: 3
+                            Layout.preferredHeight: 20
+
                             text: "Connect"
                             visible: !availableNetworksRow.showPasswordBox
                             enabled: !modelData.inUse
@@ -176,17 +179,30 @@ Item{
                                 availableNetworksRow.showPasswordBox = true 
                             }
                             
-                            //onClicked: NetworkManager.changeConnection(modelData) need to figure out connection flow here
                         }
+                        PopupButton {
+                            Layout.preferredHeight: 20
+                            Layout.preferredWidth: 20
+
+                            text: ""
+                            visible: availableNetworksRow.showPasswordBox
+                            enabled: !modelData.inUse
+                            onClicked: (m) => {
+                                availableNetworksRow.showPasswordBox = false 
+                            }                               
+                        }    
                         TextField {
+                            Layout.preferredHeight: 20
+
                             id: passwordInput
                             width: 50
                             placeholderText: "Enter password"
                             visible: availableNetworksRow.showPasswordBox
                             focus: true
-                             onVisibleChanged: {
-                            if (visible)
-                                passwordInput.forceActiveFocus()
+                            onVisibleChanged: {
+                                if (visible){
+                                    passwordInput.forceActiveFocus()
+                                }
                             }
                             onAccepted: {
                                 availableNetworksRow.showPasswordBox = false
@@ -195,6 +211,7 @@ Item{
                                 clear()
                             }
                         }
+                        
                     }
                 }
             }

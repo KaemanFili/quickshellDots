@@ -18,6 +18,10 @@ todo:
 
 -Make the timer not look completely terrible.
 
+-power button
+
+-calendar popup
+
 -Shortcuts cheat sheet pop up [fun and easy quick win] (maybe we make it dynamic based on hyperland configs) 
 
 -themeChangerPopup (should be a quick win. most of the work is already done. The only "difficult" part will be expanding themes to other applications outside of quickshell)
@@ -25,5 +29,9 @@ todo:
 -transitionEffects and aesthetic tweeks
 https://youtu.be/UBgjcSc9QOw?t=8068
 
-    -play video while things load. That would be pretty neat.
+-notification manager
+
+-play video while things load. That would be pretty neat.
+
+-cool audio player
 

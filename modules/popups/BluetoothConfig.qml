@@ -38,6 +38,10 @@ Item{
         // Alphabetical by name
         return a.name.localeCompare(b.name);
     }
+
+    function getMaxSize(size){
+        return size <= (10*25) ? size : (10*25)
+    }
     
     
     property list<var> connectedDevices: Bluetooth.devices.values.filter(d => d.connected).sort(sortFunction)
@@ -104,7 +108,7 @@ Item{
                             }
                             else {
                                 bluetoothFlickable.isVisible = true
-                                bluetoothFlickable.height = modelData.length === 0 ? 20 : (modelData.length)*25
+                                bluetoothFlickable.height = bluetoothConfig.getMaxSize(modelData.length*25)
                             }
                         }
                     }
@@ -115,7 +119,7 @@ Item{
                     property var isVisible: true //need to figure out a way to maintain state when this reloads
 
                     width: 400
-                    height: modelData.length === 0 ? 20 : (modelData.length)*25
+                    height: bluetoothConfig.getMaxSize(modelData.length*25)
 
                     clip: true
                     visible: isVisible
