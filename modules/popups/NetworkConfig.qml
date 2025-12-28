@@ -68,6 +68,7 @@ Item{
 
                     text: modelData.name + " " + iconsMap.map[symbolType]
 
+                    color: textBorderColor
                 }
                 Item{ Layout.fillWidth: true}
                 PopupButton{
@@ -165,9 +166,9 @@ Item{
 
                         visible: !modelData.inUse
 
-                        Text { text: modelData.ssid }
-                        Text { text: modelData.security === "--" ? "Open" : modelData.security }
-                        Text { text: modelData.bars }
+                        Text { text: modelData.ssid; color: textBorderColor}
+                        Text { text: modelData.security === "--" ? "Open" : modelData.security; color: textBorderColor }
+                        Text { text: modelData.bars; color: textBorderColor }
                         Item{ Layout.fillWidth: true}
                         PopupButton {
                             Layout.preferredHeight: 20
@@ -196,9 +197,15 @@ Item{
 
                             id: passwordInput
                             width: 50
+
                             placeholderText: "Enter password"
                             visible: availableNetworksRow.showPasswordBox
                             focus: true
+                            font.family: fontFamily
+                            background: Rectangle{
+                                radius: 8   
+                                color: primaryColor
+                            }
                             onVisibleChanged: {
                                 if (visible){
                                     passwordInput.forceActiveFocus()

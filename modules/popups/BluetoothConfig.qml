@@ -153,6 +153,7 @@ Item{
                                     text: device.name
                                     width: 200
                                     font.family: fontFamily
+                                    color: textBorderColor
                                 }
                                 PopupButton {
                                     height: deviceRow.height

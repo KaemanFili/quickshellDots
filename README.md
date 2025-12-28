@@ -11,8 +11,15 @@ todo:
 -back up . files with a github repo ez DONE
 
 -Application Launcher popUp
+    - applicationManager.qml
+        - creates list of applications. Application have: display name, icon, launch name?(might not need this one)
+    - applicationConfig.qml
+        - displays list of applications to launch
+        - can launch applications based on clicking icon
+        - can fuzzy filter applications with top search bar
 
--display Current Application in task bar
+
+-display Current Application in task bar "this is probably going to use `hyperctl clients`
 
 -display system stats
 
