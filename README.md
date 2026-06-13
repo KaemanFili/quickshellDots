@@ -1,43 +1,77 @@
-This is a repo for a quickshell UI that will be used in tandam with hyperland. I am currently running this off of Cachy os, so I imagine it would work on arch just fine. I will add more details/ improve function as I get more done in this project. Below is the order of things that I'm currently working on and how far along I am.
+# Quickshell UI
 
-todo:
+A personal [Quickshell](https://quickshell.outfoxxed.me/) configuration for a Hyprland-based desktop.
 
--Theme manager singleton  DONE
+This setup is currently developed on CachyOS, so it should be a reasonable fit for Arch-based systems. The project is still evolving, and the roadmap below tracks the rough order of planned work.
 
--Create functional volume popUp DONE
+## Configuration
 
--Create functioning connection manager popUp DONE
+### Environment Variables
 
--back up . files with a github repo ez DONE
+| Variable | Required | Description |
+| --- | --- | --- |
+| `QUICKSHELL_HOME` | No | Overrides the home directory used for local helper scripts. Falls back to `HOME` when unset. |
 
--Application Launcher popUp (might be able to just customize rofi)
-    - applicationManager.qml
-        - creates list of applications. Application have: display name, icon, launch name?(might not need this one)
-    - applicationConfig.qml
-        - displays list of applications to launch
-        - can launch applications based on clicking icon
-        - can fuzzy filter applications with top search bar
+Example:
 
+```sh
+export QUICKSHELL_HOME="$HOME"
+```
 
--display Current Application in task bar "this is probably going to use `hyperctl clients`
+## Project Status
 
--display system stats
+### Completed
 
--Make the timer not look completely terrible.(done)
+- [x] Theme manager singleton
+- [x] Functional volume popup
+- [x] Functional connection manager popup
+- [x] Dotfile backup via GitHub repo
+- [x] Improved timer styling
 
--power button
+### In Progress / Planned
 
--calendar popup
+- [ ] Application launcher popup
+- [ ] Current application display in the task bar
+- [ ] System stats display
+- [ ] Power button
+- [ ] Calendar popup
+- [ ] Shortcuts cheat sheet popup
+- [ ] Theme changer popup improvements
+- [ ] Transition effects and visual polish
+- [ ] Notification manager
+- [ ] Loading video while shell components initialize
+- [ ] Audio player
 
--Shortcuts cheat sheet pop up [fun and easy quick win] (maybe we make it dynamic based on hyperland configs) 
+## Roadmap Notes
 
--themeChangerPopup (should be a quick win. most of the work is already done. The only "difficult" part will be expanding themes to other applications outside of quickshell)
+### Application Launcher
 
--transitionEffects and aesthetic tweeks
-https://youtu.be/UBgjcSc9QOw?t=8068
+The launcher may be handled by customizing Rofi instead of building a full native popup.
 
--notification manager
+Potential native implementation:
 
--play video while things load. That would be pretty neat.
+- `applicationManager.qml`
+  - Builds a list of applications
+  - Tracks display name, icon, and optional launch command
+- `applicationConfig.qml`
+  - Displays available applications
+  - Launches apps from icon clicks
+  - Supports fuzzy filtering from a top search bar
 
--cool audio player
+### Current Application
+
+This will probably use `hyprctl clients` to determine the active application.
+
+### Shortcuts
+
+The shortcuts popup could become dynamic by reading Hyprland configuration files.
+
+### Theme Changer
+
+Most of the quickshell-side work is already in place. The harder part is expanding theme changes to external applications outside of Quickshell.
+
+### Visual Polish
+
+Reference:
+
+- <https://youtu.be/UBgjcSc9QOw?t=8068>

@@ -8,7 +8,10 @@ Singleton {
     id: root
 
     // Path to JSON file
-    property string path: Qt.resolvedUrl("../../config/themes.json")  
+    property string path: Qt.resolvedUrl("../../config/themes.json")
+    property string repoPath: localPath(Qt.resolvedUrl("../.."))
+    property string userHome: stripTrailingSlash(String(Quickshell.env("QUICKSHELL_HOME") || Quickshell.env("HOME") || ""))
+    property string wallpaperSetterPath: userHome ? userHome + "/.local/bin/set-wallpaper" : "set-wallpaper"
 
     property string curTheme: ""
     // The live map of themes (name -> object)
@@ -23,8 +26,28 @@ Singleton {
         defaultTextColor: "#ffffff",
         textBorderColor: "#000000",
         fontStyle: "Gohu Nerd Font",
-        wallpaperPath: "/home/kaemy/.config/wallpapers/retro-BMO.jpg"
+        wallpaperPath: "wallpapers/retro-BMO.jpg"
     })
+    function localPath(url) {
+        const path = String(url)
+
+        if (path.startsWith("file://"))
+            return decodeURIComponent(path.slice("file://".length))
+
+        return path
+    }
+    function stripTrailingSlash(path) {
+        return path.endsWith("/") ? path.slice(0, -1) : path
+    }
+    function resolveRepoPath(path) {
+        if (!path || path.startsWith("/") || path.includes("://"))
+            return path
+
+        const base = root.repoPath.endsWith("/") ? root.repoPath.slice(0, -1) : root.repoPath
+        const relativePath = path.startsWith("./") ? path.slice(2) : path
+
+        return base + "/" + relativePath
+    }
     function setCurTheme(name){
         //console.log("setting current theme of: "+ name)
         root.curTheme = name
@@ -53,7 +76,7 @@ Singleton {
         if (!wallpaperPath)
             return
 
-        wallpaperSetter.exec(["/home/kaemy/.local/bin/set-wallpaper", wallpaperPath])
+        wallpaperSetter.exec([root.wallpaperSetterPath, resolveRepoPath(wallpaperPath)])
     }
     function alterColor(colorString, amount = 0.8) {
         const c = Qt.color(colorString)
