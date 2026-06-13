@@ -10,13 +10,20 @@ This setup is currently developed on CachyOS, so it should be a reasonable fit f
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `QUICKSHELL_HOME` | No | Overrides the home directory used for local helper scripts. Falls back to `HOME` when unset. |
+| `QUICKSHELL_HOME` | No | Overrides the home directory used for external user config paths. Falls back to `HOME` when unset. |
 
 Example:
 
 ```sh
 export QUICKSHELL_HOME="$HOME"
 ```
+
+### Helper Scripts
+
+Quickshell-owned helper scripts live in `scripts/`:
+
+- `scripts/set-wallpaper` updates Hyprpaper for every Hyprland monitor.
+- `scripts/set-rofi-theme` updates the `@theme` entry in the Rofi config.
 
 ## Project Status
 
@@ -68,7 +75,7 @@ The shortcuts popup could become dynamic by reading Hyprland configuration files
 
 ### Theme Changer
 
-Most of the quickshell-side work is already in place. The harder part is expanding theme changes to external applications outside of Quickshell.
+Theme changes now update Quickshell, wallpaper, and Rofi. Rofi theme files live under `rofi/themes`, helper scripts live under `scripts`, and each theme can point to its matching Rofi file with `rofiThemePath` in `config/themes.json`.
 
 ### Visual Polish
 

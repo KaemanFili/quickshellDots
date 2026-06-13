@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+wallpaper_path="${1:-}"
+fit_mode="${2:-cover}"
+
+if [[ -z "$wallpaper_path" ]]; then
+    echo "usage: set-wallpaper <path> [fit_mode]" >&2
+    exit 2
+fi
+
+if [[ ! -f "$wallpaper_path" ]]; then
+    echo "set-wallpaper: file not found: $wallpaper_path" >&2
+    exit 1
+fi
+
+if ! pgrep -x hyprpaper >/dev/null 2>&1; then
+    hyprpaper >/tmp/hyprpaper.log 2>&1 &
+    sleep 0.5
+fi
+
+monitor_output="$(hyprctl monitors 2>/dev/null)" || {
+    echo "set-wallpaper: failed to query Hyprland monitors" >&2
+    exit 1
+}
+
+mapfile -t monitors < <(awk '/^Monitor / { print $2 }' <<< "$monitor_output")
+
+set_hyprpaper_wallpaper() {
+    local target="$1"
+
+    for _ in {1..10}; do
+        if hyprctl hyprpaper wallpaper "${target}, ${wallpaper_path}, ${fit_mode}"; then
+            return 0
+        fi
+
+        sleep 0.2
+    done
+
+    return 1
+}
+
+if [[ "${#monitors[@]}" -eq 0 ]]; then
+    set_hyprpaper_wallpaper ""
+    exit 0
+fi
+
+for monitor in "${monitors[@]}"; do
+    set_hyprpaper_wallpaper "$monitor"
+done

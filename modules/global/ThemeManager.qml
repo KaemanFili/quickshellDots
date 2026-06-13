@@ -11,7 +11,10 @@ Singleton {
     property string path: Qt.resolvedUrl("../../config/themes.json")
     property string repoPath: localPath(Qt.resolvedUrl("../.."))
     property string userHome: stripTrailingSlash(String(Quickshell.env("QUICKSHELL_HOME") || Quickshell.env("HOME") || ""))
-    property string wallpaperSetterPath: userHome ? userHome + "/.local/bin/set-wallpaper" : "set-wallpaper"
+    property string wallpaperSetterPath: root.repoPath + "/scripts/set-wallpaper"
+    property string rofiThemeSetterPath: root.repoPath + "/scripts/set-rofi-theme"
+    property string rofiConfigPath: userHome ? userHome + "/.config/rofi/config.rasi" : ""
+    property string defaultThemeName: "BMO"
 
     property string curTheme: ""
     // The live map of themes (name -> object)
@@ -26,7 +29,8 @@ Singleton {
         defaultTextColor: "#ffffff",
         textBorderColor: "#000000",
         fontStyle: "Gohu Nerd Font",
-        wallpaperPath: "wallpapers/retro-BMO.jpg"
+        wallpaperPath: "wallpapers/retro-BMO.jpg",
+        rofiThemePath: "rofi/themes/quickshell-BMO.rasi"
     })
     function localPath(url) {
         const path = String(url)
@@ -50,8 +54,12 @@ Singleton {
     }
     function setCurTheme(name){
         //console.log("setting current theme of: "+ name)
-        root.curTheme = name
-        setWallpaper(theme(name))
+        const themeName = root.map[name] ? name : root.defaultThemeName
+        const themeData = theme(themeName)
+
+        root.curTheme = themeName
+        setWallpaper(themeData)
+        setRofiTheme(themeName, themeData)
     }
     function getCurTheme(){
         return theme(root.curTheme)
@@ -78,6 +86,16 @@ Singleton {
 
         wallpaperSetter.exec([root.wallpaperSetterPath, resolveRepoPath(wallpaperPath)])
     }
+    function rofiThemePath(name, themeData) {
+        const themePath = themeData.rofiThemePath || ("rofi/themes/quickshell-" + name + ".rasi")
+        return resolveRepoPath(themePath)
+    }
+    function setRofiTheme(name, themeData) {
+        if (!root.rofiConfigPath)
+            return
+
+        rofiThemeSetter.exec([root.rofiThemeSetterPath, root.rofiConfigPath, rofiThemePath(name, themeData)])
+    }
     function alterColor(colorString, amount = 0.8) {
         const c = Qt.color(colorString)
         const v = Math.max(0, Math.min(1, c.hsvValue * amount))
@@ -92,6 +110,18 @@ Singleton {
                 const err = text.trim()
                 if (err.length)
                     console.error("ThemeManager: failed to set wallpaper:", err)
+            }
+        }
+    }
+
+    Process {
+        id: rofiThemeSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set rofi theme:", err)
             }
         }
     }

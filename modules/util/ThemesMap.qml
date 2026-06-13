@@ -12,7 +12,9 @@ QtObject {
             "backgroundColor": '#43856c',
             "defaultTextColor": '#2828a5',
             "textBorderColor": '#201d1d',
-            "fontStyle": "Gohu Nerd Font"
+            "fontStyle": "Gohu Nerd Font",
+            "wallpaperPath": "wallpapers/retro-BMO.jpg",
+            "rofiThemePath": "rofi/themes/quickshell-BMO.rasi"
         },
         "PB" : {
             "primaryColor": '#F48DB9',
@@ -22,7 +24,21 @@ QtObject {
             "backgroundColor": '#FED7D5',
             "defaultTextColor": '#7A4D69',
             "textBorderColor": '#7A4D69',
-            "fontStyle": "Gohu Nerd Font"
+            "fontStyle": "Gohu Nerd Font",
+            "wallpaperPath": "wallpapers/PB.jpg",
+            "rofiThemePath": "rofi/themes/quickshell-PB.rasi"
+        },
+        "IK" : {
+            "primaryColor": '#75DFF0',
+            "secondaryColor": '#0000E8',
+            "tertiaryColor": '#FFD33B',
+            "quaternaryColor": '#C51F4A',
+            "backgroundColor": '#3CA8D7',
+            "defaultTextColor": '#092A5B',
+            "textBorderColor": '#051D43',
+            "fontStyle": "Gohu Nerd Font",
+            "wallpaperPath": "wallpapers/IK.png",
+            "rofiThemePath": "rofi/themes/quickshell-IK.rasi"
         }
     }
 

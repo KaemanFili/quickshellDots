@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config_path="${1:-}"
+theme_path="${2:-}"
+
+if [[ -z "$config_path" || -z "$theme_path" ]]; then
+    echo "usage: set-rofi-theme <config_path> <theme_path>" >&2
+    exit 2
+fi
+
+if [[ ! -f "$theme_path" ]]; then
+    echo "set-rofi-theme: theme file not found: $theme_path" >&2
+    exit 1
+fi
+
+mkdir -p "$(dirname "$config_path")"
+
+theme_line="@theme \"${theme_path//\"/\\\"}\""
+
+if [[ ! -s "$config_path" ]]; then
+    cat >"$config_path" <<EOF
+configuration {
+  modi: "drun,run,window";
+  show-icons: true;
+  font: "Gohu Nerd Font 11";
+  drun-display-format: "{name}";
+}
+
+${theme_line}
+EOF
+    exit 0
+fi
+
+tmp_file="$(mktemp "${config_path}.XXXXXX")"
+trap 'rm -f "$tmp_file"' EXIT
+
+if grep -qE '^@theme[[:space:]]+' "$config_path"; then
+    sed -E "s|^@theme[[:space:]]+.*$|${theme_line}|" "$config_path" >"$tmp_file"
+else
+    cp "$config_path" "$tmp_file"
+    printf '\n%s\n' "$theme_line" >>"$tmp_file"
+fi
+
+mv "$tmp_file" "$config_path"
+trap - EXIT
