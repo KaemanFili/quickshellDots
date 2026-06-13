@@ -23,6 +23,38 @@ Scope {
   ScreensMap {
     id: screensMap
   }
+  PopupSourcesMap {
+    id: popupSources
+  }
+
+  function hasPopup(popupName) {
+    return popupSources.map[popupName] !== undefined
+  }
+
+  function showPopup(popupName) {
+    if (root.hasPopup(popupName)) {
+      root.activePopup = popupName
+    }
+  }
+
+  function togglePopup(popupName) {
+    if (root.hasPopup(popupName)) {
+      root.activePopup = root.activePopup === popupName ? "" : popupName
+    }
+  }
+
+  function closePopup() {
+    root.activePopup = ""
+  }
+
+  IpcHandler {
+    target: "popup"
+
+    function show(popupName: string): void { root.showPopup(popupName) }
+    function toggle(popupName: string): void { root.togglePopup(popupName) }
+    function close(): void { root.closePopup() }
+    function toggleThemeChanger(): void { root.togglePopup("themeChanger") }
+  }
   
   PopupWindow {
     id: popupWindow
@@ -95,6 +127,7 @@ Scope {
         // the ClockWidget type we just created
         ClockWidget {
           Layout.alignment: Qt.AlignHCenter
+          Layout.bottomMargin: 2
           fontFamily: root.theme.fontStyle
           textColor: root.theme.defaultTextColor
           textBorderColor: root.theme.textBorderColor

@@ -21,7 +21,7 @@ Item {
         id: bg
         anchors.fill: parent
         radius: 8
-        color: normalColor
+        color: mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : normalColor
 
         Behavior on color { ColorAnimation { duration: 100 } }
     }
@@ -34,15 +34,9 @@ Item {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-
-        onPressed: bg.color = pressedColor
-        onReleased: {
-            bg.color = containsMouse ? hoverColor : normalColor
-        }
-        onEntered: if (!pressed) bg.color = hoverColor
-        onExited:  if (!pressed) bg.color = normalColor
 
         onClicked: root.clicked()
     }

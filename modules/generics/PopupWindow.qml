@@ -12,9 +12,6 @@ PanelWindow {
         id: popupSources
     }
 
-    ThemesMap {
-        id: themesMap
-    }
     property var theme: ThemeManager.getCurTheme()
     property string backgroundColor: theme.backgroundColor
     property string fontColor: theme.defaultTextColor

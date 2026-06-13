@@ -9,30 +9,66 @@ Item {
     property string textBorderColor: ""
     property string backgroundColor: ""
 
-    implicitHeight: childrenRect.height
-    implicitWidth: childrenRect.width
+    implicitHeight: clockPill.height
+    implicitWidth: clockPill.width
 
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
     }
-    Rectangle {
-        implicitHeight: childrenRect.height
-        implicitWidth: childrenRect.width
-        color: "transparent"
-        Text {
-            height: 50
-            //width: 20
 
-            text: Qt.formatDateTime(clock.date, "hh\nmm")
-            color: textColor
-            font.family: fontFamily
-            font.pixelSize: 16
-            font.bold: true
-            //style: Text.Outline
-            //styleColor: textBorderColor
+    Rectangle {
+        id: clockPill
+
+        width: 32
+        height: 58
+        radius: 8
+        color: backgroundColor
+        border.color: textBorderColor
+        border.width: 1
+
+        Column {
+            anchors.centerIn: parent
+            spacing: -1
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: Qt.formatDateTime(clock.date, "hh")
+                color: textColor
+                horizontalAlignment: Text.AlignHCenter
+                font.family: fontFamily
+                font.pixelSize: 16
+                font.bold: true
+            }
+
+            Rectangle {
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 14
+                height: 1
+                color: textBorderColor
+                opacity: 0.5
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: Qt.formatDateTime(clock.date, "mm")
+                color: textColor
+                horizontalAlignment: Text.AlignHCenter
+                font.family: fontFamily
+                font.pixelSize: 16
+                font.bold: true
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: Qt.formatDateTime(clock.date, "ddd")
+                color: textColor
+                opacity: 0.75
+                horizontalAlignment: Text.AlignHCenter
+                font.family: fontFamily
+                font.pixelSize: 8
+                font.bold: true
+            }
         }
     }
-    
 }
-

@@ -27,13 +27,14 @@ Item {
         text: labelIcon
         font.pixelSize: 20
         font.family: fontFamily
-        color: textColor
+        color: mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : textColor
         style: Text.Outline
         styleColor: textBorderColor
 
         Behavior on color { ColorAnimation { duration: 100 } }
     }
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
         
@@ -43,11 +44,5 @@ Item {
                 activePopup = (activePopup === popupName ? "" : popupName)
             }
         }
-        onPressed: icon.color = pressedColor
-        onReleased: {
-            icon.color = containsMouse ? hoverColor : textColor
-        }
-        onEntered: if (!pressed) icon.color = hoverColor
-        onExited:  if (!pressed) icon.color = textColor
     }
 }

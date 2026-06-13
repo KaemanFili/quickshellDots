@@ -10,7 +10,7 @@ todo:
 
 -back up . files with a github repo ez DONE
 
--Application Launcher popUp
+-Application Launcher popUp (might be able to just customize rofi)
     - applicationManager.qml
         - creates list of applications. Application have: display name, icon, launch name?(might not need this one)
     - applicationConfig.qml
@@ -23,7 +23,7 @@ todo:
 
 -display system stats
 
--Make the timer not look completely terrible.
+-Make the timer not look completely terrible.(done)
 
 -power button
 
@@ -41,4 +41,3 @@ https://youtu.be/UBgjcSc9QOw?t=8068
 -play video while things load. That would be pretty neat.
 
 -cool audio player
-

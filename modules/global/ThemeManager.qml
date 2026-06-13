@@ -28,6 +28,7 @@ Singleton {
     function setCurTheme(name){
         //console.log("setting current theme of: "+ name)
         root.curTheme = name
+        setWallpaper(theme(name))
     }
     function getCurTheme(){
         return theme(root.curTheme)
@@ -46,10 +47,30 @@ Singleton {
         //console.log("grabbing theme with name: "+ name)
         return root.map[name] || root.defaultTheme
     }
+    function setWallpaper(themeData) {
+        const wallpaperPath = themeData.wallpaperPath || root.defaultTheme.wallpaperPath
+
+        if (!wallpaperPath)
+            return
+
+        wallpaperSetter.exec(["/home/kaemy/.local/bin/set-wallpaper", wallpaperPath])
+    }
     function alterColor(colorString, amount = 0.8) {
         const c = Qt.color(colorString)
         const v = Math.max(0, Math.min(1, c.hsvValue * amount))
         return Qt.hsva(c.hsvHue, c.hsvSaturation, v, c.a)
+    }
+
+    Process {
+        id: wallpaperSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set wallpaper:", err)
+            }
+        }
     }
 
     FileView {

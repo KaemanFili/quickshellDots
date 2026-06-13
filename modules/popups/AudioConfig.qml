@@ -71,6 +71,7 @@ Item{
             }
             Text {
                 text: audioConfig.headphonesIcon + " " +audioConfig.sink?.description + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSink) + "%"
+                color: textBorderColor
             }
             RowLayout {
                 spacing: 8
@@ -79,6 +80,7 @@ Item{
                 Text {
                     minimumPixelSize:30
                     text: audioConfig.volumeIcon
+                    color: textBorderColor
                 }
 
                 Rectangle {
@@ -131,6 +133,7 @@ Item{
             }
             Text {
                 text: audioConfig.micIcon + " " +audioConfig.mic?.nickname + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSource) + "%"
+                color: textBorderColor
             }
             RowLayout {
                 spacing: 8
@@ -139,6 +142,7 @@ Item{
                 Text {
                     minimumPixelSize:30
                     text: audioConfig.volumeIcon
+                    color: textBorderColor
                 }
 
                 Rectangle {

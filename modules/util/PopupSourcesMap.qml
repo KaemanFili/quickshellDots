@@ -6,7 +6,8 @@ QtObject {
     property var map: {
         "bluetooth" : "../popups/BluetoothConfig.qml",
         "audio" :     "../popups/AudioConfig.qml",
-        "network" :   "../popups/NetworkConfig.qml"
+        "network" :   "../popups/NetworkConfig.qml",
+        "themeChanger" : "../popups/ThemeChangerConfig.qml"
         // add more as needed
     }
 }
