@@ -77,8 +77,7 @@ Item {
                 PopupButton {
                     Layout.preferredHeight: 24
                     Layout.preferredWidth: 90
-                    text: themeChangerConfig.isActiveTheme(modelData) ? "Active" : "Apply"
-                    enabled: !themeChangerConfig.isActiveTheme(modelData)
+                    text: themeChangerConfig.isActiveTheme(modelData) ? "Reapply" : "Apply"
 
                     onClicked: {
                         ThemeManager.setCurTheme(modelData)

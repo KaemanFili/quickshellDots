@@ -13,7 +13,11 @@ Singleton {
     property string userHome: stripTrailingSlash(String(Quickshell.env("QUICKSHELL_HOME") || Quickshell.env("HOME") || ""))
     property string wallpaperSetterPath: root.repoPath + "/scripts/set-wallpaper"
     property string rofiThemeSetterPath: root.repoPath + "/scripts/set-rofi-theme"
+    property string kittyThemeSetterPath: root.repoPath + "/scripts/set-kitty-theme"
     property string rofiConfigPath: userHome ? userHome + "/.config/rofi/config.rasi" : ""
+    property string rofiThemePath: userHome ? userHome + "/.config/rofi/quickshell-current-theme.rasi" : ""
+    property string kittyConfigPath: userHome ? userHome + "/.config/kitty/kitty.conf" : ""
+    property string kittyThemePath: userHome ? userHome + "/.config/kitty/quickshell-current-theme.conf" : ""
     property string defaultThemeName: "BMO"
 
     property string curTheme: ""
@@ -30,7 +34,7 @@ Singleton {
         textBorderColor: "#000000",
         fontStyle: "Gohu Nerd Font",
         wallpaperPath: "wallpapers/retro-BMO.jpg",
-        rofiThemePath: "rofi/themes/quickshell-BMO.rasi"
+        kittyBackgroundOpacity: "1.0"
     })
     function localPath(url) {
         const path = String(url)
@@ -59,7 +63,8 @@ Singleton {
 
         root.curTheme = themeName
         setWallpaper(themeData)
-        setRofiTheme(themeName, themeData)
+        setRofiTheme(themeData)
+        setKittyTheme(themeData)
     }
     function getCurTheme(){
         return theme(root.curTheme)
@@ -86,15 +91,33 @@ Singleton {
 
         wallpaperSetter.exec([root.wallpaperSetterPath, resolveRepoPath(wallpaperPath)])
     }
-    function rofiThemePath(name, themeData) {
-        const themePath = themeData.rofiThemePath || ("rofi/themes/quickshell-" + name + ".rasi")
-        return resolveRepoPath(themePath)
-    }
-    function setRofiTheme(name, themeData) {
-        if (!root.rofiConfigPath)
+    function setRofiTheme(themeData) {
+        if (!root.rofiConfigPath || !root.rofiThemePath)
             return
 
-        rofiThemeSetter.exec([root.rofiThemeSetterPath, root.rofiConfigPath, rofiThemePath(name, themeData)])
+        rofiThemeSetter.exec(themeCommandArgs(root.rofiThemeSetterPath, root.rofiConfigPath, root.rofiThemePath, themeData))
+    }
+    function setKittyTheme(themeData) {
+        if (!root.kittyConfigPath || !root.kittyThemePath)
+            return
+
+        kittyThemeSetter.exec(themeCommandArgs(root.kittyThemeSetterPath, root.kittyConfigPath, root.kittyThemePath, themeData))
+    }
+    function themeCommandArgs(scriptPath, configPath, themePath, themeData) {
+        return [
+            scriptPath,
+            configPath,
+            themePath,
+            themeData.fontStyle || root.defaultTheme.fontStyle,
+            themeData.primaryColor || root.defaultTheme.primaryColor,
+            themeData.secondaryColor || root.defaultTheme.secondaryColor,
+            themeData.tertiaryColor || root.defaultTheme.tertiaryColor,
+            themeData.quaternaryColor || root.defaultTheme.quaternaryColor,
+            themeData.backgroundColor || root.defaultTheme.backgroundColor,
+            themeData.defaultTextColor || root.defaultTheme.defaultTextColor,
+            themeData.textBorderColor || root.defaultTheme.textBorderColor,
+            themeData.kittyBackgroundOpacity || root.defaultTheme.kittyBackgroundOpacity
+        ]
     }
     function alterColor(colorString, amount = 0.8) {
         const c = Qt.color(colorString)
@@ -122,6 +145,18 @@ Singleton {
                 const err = text.trim()
                 if (err.length)
                     console.error("ThemeManager: failed to set rofi theme:", err)
+            }
+        }
+    }
+
+    Process {
+        id: kittyThemeSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set kitty theme:", err)
             }
         }
     }

@@ -2,28 +2,148 @@
 set -euo pipefail
 
 config_path="${1:-}"
-theme_path="${2:-}"
+active_theme_path="${2:-}"
+font_family="${3:-}"
+primary="${4:-}"
+secondary="${5:-}"
+tertiary="${6:-}"
+quaternary="${7:-}"
+background="${8:-}"
+foreground="${9:-}"
+border="${10:-}"
 
-if [[ -z "$config_path" || -z "$theme_path" ]]; then
-    echo "usage: set-rofi-theme <config_path> <theme_path>" >&2
+if [[ -z "$config_path" || -z "$active_theme_path" || -z "$font_family" || -z "$primary" || -z "$secondary" || -z "$tertiary" || -z "$quaternary" || -z "$background" || -z "$foreground" || -z "$border" ]]; then
+    echo "usage: set-rofi-theme <config_path> <active_theme_path> <font_family> <primary> <secondary> <tertiary> <quaternary> <background> <foreground> <border>" >&2
     exit 2
 fi
 
-if [[ ! -f "$theme_path" ]]; then
-    echo "set-rofi-theme: theme file not found: $theme_path" >&2
-    exit 1
-fi
+mkdir -p "$(dirname "$config_path")" "$(dirname "$active_theme_path")"
 
-mkdir -p "$(dirname "$config_path")"
+cat >"$active_theme_path" <<EOF
+* {
+  background: ${background};
+  primary: ${primary};
+  secondary: ${secondary};
+  tertiary: ${tertiary};
+  quaternary: ${quaternary};
+  foreground: ${foreground};
+  border: ${border};
 
-theme_line="@theme \"${theme_path//\"/\\\"}\""
+  background-color: transparent;
+  text-color: @foreground;
+}
+
+window {
+  width: 560px;
+  border: 2px;
+  border-color: @border;
+  border-radius: 16px;
+  background-color: @background;
+}
+
+mainbox {
+  padding: 15px;
+  spacing: 12px;
+  background-color: transparent;
+  children: [ "inputbar", "message", "listview" ];
+}
+
+inputbar {
+  padding: 8px 10px;
+  spacing: 8px;
+  border: 2px;
+  border-color: @border;
+  border-radius: 8px;
+  background-color: @primary;
+  children: [ "prompt", "entry" ];
+}
+
+prompt {
+  padding: 0 6px 0 0;
+  text-color: @border;
+}
+
+entry {
+  placeholder: "Search";
+  placeholder-color: @border;
+  text-color: @foreground;
+}
+
+message {
+  padding: 8px 10px;
+  border: 2px;
+  border-color: @border;
+  border-radius: 8px;
+  background-color: @primary;
+}
+
+textbox {
+  text-color: @border;
+}
+
+listview {
+  lines: 8;
+  columns: 1;
+  spacing: 6px;
+  fixed-height: false;
+  background-color: transparent;
+}
+
+element {
+  padding: 8px 10px;
+  spacing: 10px;
+  border: 2px;
+  border-color: transparent;
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+element normal.normal {
+  text-color: @foreground;
+}
+
+element alternate.normal {
+  background-color: @quaternary;
+  text-color: @primary;
+}
+
+element selected.normal,
+element selected.active {
+  border-color: @border;
+  background-color: @secondary;
+  text-color: @background;
+}
+
+element selected.urgent {
+  border-color: @border;
+  background-color: @tertiary;
+  text-color: @primary;
+}
+
+element-icon {
+  size: 22px;
+}
+
+element-text {
+  vertical-align: 0.5;
+}
+
+scrollbar {
+  width: 7px;
+  border: 0;
+  handle-color: @border;
+  background-color: @primary;
+}
+EOF
+
+theme_line="@theme \"${active_theme_path//\"/\\\"}\""
 
 if [[ ! -s "$config_path" ]]; then
     cat >"$config_path" <<EOF
 configuration {
   modi: "drun,run,window";
   show-icons: true;
-  font: "Gohu Nerd Font 11";
+  font: "${font_family} 11";
   drun-display-format: "{name}";
 }
 
@@ -35,12 +155,26 @@ fi
 tmp_file="$(mktemp "${config_path}.XXXXXX")"
 trap 'rm -f "$tmp_file"' EXIT
 
-if grep -qE '^@theme[[:space:]]+' "$config_path"; then
-    sed -E "s|^@theme[[:space:]]+.*$|${theme_line}|" "$config_path" >"$tmp_file"
-else
-    cp "$config_path" "$tmp_file"
-    printf '\n%s\n' "$theme_line" >>"$tmp_file"
-fi
+font_line="  font: \"${font_family} 11\";"
+
+awk -v theme_line="$theme_line" -v font_line="$font_line" '
+    /^@theme[[:space:]]+/ {
+        print theme_line
+        found_theme = 1
+        next
+    }
+    /^[[:space:]]*font:[[:space:]]*".*";[[:space:]]*$/ {
+        print font_line
+        next
+    }
+    { print }
+    END {
+        if (!found_theme) {
+            print ""
+            print theme_line
+        }
+    }
+' "$config_path" >"$tmp_file"
 
 mv "$tmp_file" "$config_path"
 trap - EXIT

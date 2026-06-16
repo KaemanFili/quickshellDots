@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config_path="${1:-}"
+active_theme_path="${2:-}"
+font_family="${3:-}"
+primary="${4:-}"
+secondary="${5:-}"
+tertiary="${6:-}"
+quaternary="${7:-}"
+background="${8:-}"
+foreground="${9:-}"
+border="${10:-}"
+background_opacity="${11:-1.0}"
+
+if [[ -z "$config_path" || -z "$active_theme_path" || -z "$font_family" || -z "$primary" || -z "$secondary" || -z "$tertiary" || -z "$quaternary" || -z "$background" || -z "$foreground" || -z "$border" || -z "$background_opacity" ]]; then
+    echo "usage: set-kitty-theme <config_path> <active_theme_path> <font_family> <primary> <secondary> <tertiary> <quaternary> <background> <foreground> <border> [background_opacity]" >&2
+    exit 2
+fi
+
+mkdir -p "$(dirname "$config_path")" "$(dirname "$active_theme_path")"
+
+cat >"$active_theme_path" <<EOF
+background ${background}
+foreground ${foreground}
+
+selection_background ${secondary}
+selection_foreground ${background}
+
+cursor ${border}
+cursor_text_color ${primary}
+
+url_color ${secondary}
+active_border_color ${primary}
+inactive_border_color ${border}
+bell_border_color ${tertiary}
+
+active_tab_background ${primary}
+active_tab_foreground ${border}
+inactive_tab_background ${quaternary}
+inactive_tab_foreground ${primary}
+tab_bar_background ${background}
+
+color0 ${border}
+color1 ${tertiary}
+color2 ${quaternary}
+color3 ${secondary}
+color4 ${foreground}
+color5 ${background}
+color6 ${primary}
+color7 ${primary}
+color8 ${foreground}
+color9 ${tertiary}
+color10 ${quaternary}
+color11 ${secondary}
+color12 ${foreground}
+color13 ${background}
+color14 ${primary}
+color15 ${background}
+EOF
+
+include_line="include ${active_theme_path}"
+opacity_line="background_opacity ${background_opacity}"
+dynamic_opacity_line="dynamic_background_opacity yes"
+begin_marker="# quickshell theme begin"
+end_marker="# quickshell theme end"
+
+if [[ ! -s "$config_path" ]]; then
+    cat >"$config_path" <<EOF
+font_family ${font_family}
+font_size 11.0
+window_padding_width 8
+confirm_os_window_close 0
+
+${begin_marker}
+${opacity_line}
+${dynamic_opacity_line}
+${include_line}
+${end_marker}
+EOF
+else
+    tmp_file="$(mktemp "${config_path}.XXXXXX")"
+    trap 'rm -f "$tmp_file"' EXIT
+
+    if grep -qF "$begin_marker" "$config_path"; then
+        awk -v begin="$begin_marker" -v end="$end_marker" -v opacity="$opacity_line" -v dynamic_opacity="$dynamic_opacity_line" -v theme_include="$include_line" '
+            $0 == begin {
+                print begin
+                print opacity
+                print dynamic_opacity
+                print theme_include
+                in_block = 1
+                next
+            }
+            $0 == end {
+                print end
+                in_block = 0
+                next
+            }
+            !in_block { print }
+        ' "$config_path" >"$tmp_file"
+    else
+        cp "$config_path" "$tmp_file"
+        printf '\n%s\n%s\n%s\n%s\n%s\n' "$begin_marker" "$opacity_line" "$dynamic_opacity_line" "$include_line" "$end_marker" >>"$tmp_file"
+    fi
+
+    mv "$tmp_file" "$config_path"
+    trap - EXIT
+fi
+
+if command -v kitty >/dev/null 2>&1; then
+    kitty @ load-config "$config_path" >/dev/null 2>&1 || true
+    kitty @ set-colors --all --configured "$active_theme_path" >/dev/null 2>&1 || true
+    kitty @ set-background-opacity --all "$background_opacity" >/dev/null 2>&1 || true
+fi

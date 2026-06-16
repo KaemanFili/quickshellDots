@@ -24,6 +24,7 @@ Quickshell-owned helper scripts live in `scripts/`:
 
 - `scripts/set-wallpaper` updates Hyprpaper for every Hyprland monitor.
 - `scripts/set-rofi-theme` updates the `@theme` entry in the Rofi config.
+- `scripts/set-kitty-theme` updates Kitty's Quickshell-managed theme include.
 
 ## Project Status
 
@@ -37,7 +38,7 @@ Quickshell-owned helper scripts live in `scripts/`:
 
 ### In Progress / Planned
 
-- [ ] Application launcher popup
+- [ ] ~~Application launcher popup~~ (accomplished this by styling Rofi)
 - [ ] Current application display in the task bar
 - [ ] System stats display
 - [ ] Power button
@@ -75,7 +76,7 @@ The shortcuts popup could become dynamic by reading Hyprland configuration files
 
 ### Theme Changer
 
-Theme changes now update Quickshell, wallpaper, and Rofi. Rofi theme files live under `rofi/themes`, helper scripts live under `scripts`, and each theme can point to its matching Rofi file with `rofiThemePath` in `config/themes.json`.
+Theme changes now update Quickshell, wallpaper, Rofi, and Kitty. Theme colors live in `config/themes.json`; Rofi and Kitty active theme files are generated under the user's config directory when a theme is applied. Helper scripts live under `scripts`.
 
 ### Visual Polish
 
