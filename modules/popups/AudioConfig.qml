@@ -69,9 +69,31 @@ Item{
                 style: Text.Outline
                 styleColor: textBorderColor
             }
-            Text {
-                text: audioConfig.headphonesIcon + " " +audioConfig.sink?.description + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSink) + "%"
-                color: textBorderColor
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Item {
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 20
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: audioConfig.headphonesIcon
+                        color: textBorderColor
+                        font.family: fontFamily
+                        font.pixelSize: 16
+                    }
+                }
+
+                Text {
+                    text: (audioConfig.sink?.description || "Output") + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSink) + "%"
+                    color: textBorderColor
+                    font.family: fontFamily
+                    font.pixelSize: 15
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
+                }
             }
             RowLayout {
                 spacing: 8
@@ -131,9 +153,31 @@ Item{
                 }
                 
             }
-            Text {
-                text: audioConfig.micIcon + " " +audioConfig.mic?.nickname + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSource) + "%"
-                color: textBorderColor
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                Item {
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 20
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: audioConfig.micIcon
+                        color: textBorderColor
+                        font.family: fontFamily
+                        font.pixelSize: 16
+                    }
+                }
+
+                Text {
+                    text: (audioConfig.mic?.nickname || "Input") + " : " + audioConfig.getDisplayVolume(Pipewire.defaultAudioSource) + "%"
+                    color: textBorderColor
+                    font.family: fontFamily
+                    font.pixelSize: 15
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
+                }
             }
             RowLayout {
                 spacing: 8

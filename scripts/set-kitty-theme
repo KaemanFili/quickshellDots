@@ -18,9 +18,33 @@ if [[ -z "$config_path" || -z "$active_theme_path" || -z "$font_family" || -z "$
     exit 2
 fi
 
+normalize_color() {
+    local value="$1"
+    local fallback="$2"
+
+    if [[ "$value" =~ ^#[[:xdigit:]]{6}([[:xdigit:]]{2})?$ ]]; then
+        printf '%s\n' "$value"
+    elif [[ "$fallback" =~ ^#[[:xdigit:]]{6}([[:xdigit:]]{2})?$ ]]; then
+        printf '%s\n' "$fallback"
+    else
+        printf '#000000\n'
+    fi
+}
+
+primary="$(normalize_color "$primary" "#444444")"
+secondary="$(normalize_color "$secondary" "#777777")"
+tertiary="$(normalize_color "$tertiary" "#c4c4c4")"
+quaternary="$(normalize_color "$quaternary" "$secondary")"
+background="$(normalize_color "$background" "#222222")"
+foreground="$(normalize_color "$foreground" "#ffffff")"
+border="$(normalize_color "$border" "#000000")"
+
 mkdir -p "$(dirname "$config_path")" "$(dirname "$active_theme_path")"
 
-cat >"$active_theme_path" <<EOF
+active_theme_tmp="$(mktemp "${active_theme_path}.XXXXXX")"
+trap 'rm -f "$active_theme_tmp"' EXIT
+
+cat >"$active_theme_tmp" <<EOF
 background ${background}
 foreground ${foreground}
 
@@ -58,6 +82,9 @@ color13 ${background}
 color14 ${primary}
 color15 ${background}
 EOF
+
+mv "$active_theme_tmp" "$active_theme_path"
+trap - EXIT
 
 include_line="include ${active_theme_path}"
 opacity_line="background_opacity ${background_opacity}"
@@ -109,7 +136,8 @@ else
 fi
 
 if command -v kitty >/dev/null 2>&1; then
-    kitty @ load-config "$config_path" >/dev/null 2>&1 || true
-    kitty @ set-colors --all --configured "$active_theme_path" >/dev/null 2>&1 || true
-    kitty @ set-background-opacity --all "$background_opacity" >/dev/null 2>&1 || true
+    kitty_remote_control="${KITTY_LISTEN_ON:-unix:@quickshell-kitty}"
+    kitty @ --to "$kitty_remote_control" load-config "$config_path" >/dev/null 2>&1 || true
+    kitty @ --to "$kitty_remote_control" set-colors --all --configured "$active_theme_path" >/dev/null 2>&1 || true
+    kitty @ --to "$kitty_remote_control" set-background-opacity --all "$background_opacity" >/dev/null 2>&1 || true
 fi

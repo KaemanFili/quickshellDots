@@ -29,6 +29,7 @@ Singleton {
         primaryColor: "#444444",
         secondaryColor: "#777777",
         tertiaryColor: '#c4c4c4',
+        quaternaryColor: "#777777",
         backgroundColor: "#222222",
         defaultTextColor: "#ffffff",
         textBorderColor: "#000000",
@@ -62,6 +63,9 @@ Singleton {
         const themeData = theme(themeName)
 
         root.curTheme = themeName
+        applyTheme(themeData)
+    }
+    function applyTheme(themeData) {
         setWallpaper(themeData)
         setRofiTheme(themeData)
         setKittyTheme(themeData)
@@ -73,6 +77,8 @@ Singleton {
         try {
             const text = file.text()
             root.map = text ? JSON.parse(text) : {}
+            if (root.curTheme !== "")
+                applyTheme(theme(root.curTheme))
         } catch (e) {
             console.error("ThemeStore: failed to parse JSON:", e)
             root.map = {}
