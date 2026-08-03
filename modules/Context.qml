@@ -6,8 +6,4 @@ import QtQuick
 import QtQuick.Layouts
 import "global"
 
-Scope {
-    Component.onCompleted: {
-        ThemeManager.setCurTheme("BMO")
-    }
-}
+Scope {}

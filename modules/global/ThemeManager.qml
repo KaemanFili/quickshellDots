@@ -9,6 +9,7 @@ Singleton {
 
     // Path to JSON file
     property string path: Qt.resolvedUrl("../../config/themes.json")
+    property string statePath: Qt.resolvedUrl("../../config/theme-state.json")
     property string repoPath: localPath(Qt.resolvedUrl("../.."))
     property string userHome: stripTrailingSlash(String(Quickshell.env("QUICKSHELL_HOME") || Quickshell.env("HOME") || ""))
     property string wallpaperSetterPath: root.repoPath + "/scripts/set-wallpaper"
@@ -21,6 +22,8 @@ Singleton {
     property string defaultThemeName: "BMO"
 
     property string curTheme: ""
+    property bool themeMapReady: false
+    property bool themeStateReady: false
     // The live map of themes (name -> object)
     property var map: ({})
 
@@ -60,10 +63,22 @@ Singleton {
     function setCurTheme(name){
         //console.log("setting current theme of: "+ name)
         const themeName = root.map[name] ? name : root.defaultThemeName
-        const themeData = theme(themeName)
 
+        if (themeState.currentTheme !== themeName)
+            themeState.currentTheme = themeName
+
+        if (root.curTheme === themeName)
+            return
+
+        const themeData = theme(themeName)
         root.curTheme = themeName
         applyTheme(themeData)
+    }
+    function initializeTheme() {
+        if (!root.themeMapReady || !root.themeStateReady)
+            return
+
+        setCurTheme(themeState.currentTheme)
     }
     function applyTheme(themeData) {
         setWallpaper(themeData)
@@ -171,20 +186,54 @@ Singleton {
         id: file
         path: root.path
 
-        //blockLoading: true
+        blockLoading: true
 
         watchChanges: true
 
         onFileChanged: reload()
 
-        onLoaded: root.updateMap()
+        onLoaded: {
+            root.updateMap()
+            root.themeMapReady = true
+            root.initializeTheme()
+        }
 
         onTextChanged: root.updateMap()
 
         onLoadFailed: {
             console.error("ThemeStore: failed to load theme file")
             root.map = {}
+            root.themeMapReady = true
+            root.initializeTheme()
         }
         Component.onCompleted: reload()
+    }
+
+    FileView {
+        id: stateFile
+        path: root.statePath
+
+        blockLoading: true
+        atomicWrites: true
+        watchChanges: true
+
+        onAdapterUpdated: writeAdapter()
+        onFileChanged: reload()
+
+        onLoaded: {
+            root.themeStateReady = true
+            root.initializeTheme()
+        }
+
+        onLoadFailed: {
+            root.themeStateReady = true
+            root.initializeTheme()
+            writeAdapter()
+        }
+
+        JsonAdapter {
+            id: themeState
+            property string currentTheme: root.defaultThemeName
+        }
     }
 }
