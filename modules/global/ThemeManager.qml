@@ -15,6 +15,8 @@ Singleton {
     property string wallpaperSetterPath: root.repoPath + "/scripts/set-wallpaper"
     property string rofiThemeSetterPath: root.repoPath + "/scripts/set-rofi-theme"
     property string kittyThemeSetterPath: root.repoPath + "/scripts/set-kitty-theme"
+    property string sddmThemeSetterPath: root.repoPath + "/scripts/set-sddm-theme"
+    property string sddmThemeConfigPath: root.repoPath + "/sddm/themes/simple/theme.conf"
     property string rofiConfigPath: userHome ? userHome + "/.config/rofi/config.rasi" : ""
     property string rofiThemePath: userHome ? userHome + "/.config/rofi/quickshell-current-theme.rasi" : ""
     property string kittyConfigPath: userHome ? userHome + "/.config/kitty/kitty.conf" : ""
@@ -36,7 +38,7 @@ Singleton {
         backgroundColor: "#222222",
         defaultTextColor: "#ffffff",
         textBorderColor: "#000000",
-        fontStyle: "Gohu Nerd Font",
+        fontStyle: "Noto Sans",
         wallpaperPath: "wallpapers/retro-BMO.jpg",
         kittyBackgroundOpacity: "1.0"
     })
@@ -84,6 +86,7 @@ Singleton {
         setWallpaper(themeData)
         setRofiTheme(themeData)
         setKittyTheme(themeData)
+        setSddmTheme(themeData)
     }
     function getCurTheme(){
         return theme(root.curTheme)
@@ -123,6 +126,20 @@ Singleton {
             return
 
         kittyThemeSetter.exec(themeCommandArgs(root.kittyThemeSetterPath, root.kittyConfigPath, root.kittyThemePath, themeData))
+    }
+    function setSddmTheme(themeData) {
+        sddmThemeSetter.exec([
+            root.sddmThemeSetterPath,
+            root.sddmThemeConfigPath,
+            root.curTheme,
+            themeData.fontStyle || root.defaultTheme.fontStyle,
+            resolveRepoPath(themeData.wallpaperPath || root.defaultTheme.wallpaperPath),
+            themeData.primaryColor || root.defaultTheme.primaryColor,
+            themeData.secondaryColor || root.defaultTheme.secondaryColor,
+            themeData.tertiaryColor || root.defaultTheme.tertiaryColor,
+            themeData.backgroundColor || root.defaultTheme.backgroundColor,
+            themeData.defaultTextColor || root.defaultTheme.defaultTextColor
+        ])
     }
     function themeCommandArgs(scriptPath, configPath, themePath, themeData) {
         return [
@@ -178,6 +195,18 @@ Singleton {
                 const err = text.trim()
                 if (err.length)
                     console.error("ThemeManager: failed to set kitty theme:", err)
+            }
+        }
+    }
+
+    Process {
+        id: sddmThemeSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set SDDM theme:", err)
             }
         }
     }

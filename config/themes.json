@@ -7,20 +7,20 @@
     "backgroundColor": "#43856c",
     "defaultTextColor": "#2828a5",
     "textBorderColor": "#201d1d",
-    "fontStyle": "Gohu Nerd Font",
+    "fontStyle": "Noto Sans",
     "wallpaperPath": "wallpapers/retro-BMO.jpg",
     "kittyBackgroundOpacity": "0.85"
   },
   "PB": {
-    "primaryColor": "#F48DB9",
-    "secondaryColor": "#D8579E",
-    "tertiaryColor": "#E9B653",
-    "quaternaryColor": "#DC635A",
-    "backgroundColor": "#FED7D5",
-    "defaultTextColor": "#7A4D69",
-    "textBorderColor": "#7A4D69",
-    "fontStyle": "Gohu Nerd Font",
-    "wallpaperPath": "wallpapers/PB.jpg",
+    "primaryColor": "#E53592",
+    "secondaryColor": "#44D2E4",
+    "tertiaryColor": "#F0B84B",
+    "quaternaryColor": "#A7286A",
+    "backgroundColor": "#84245F",
+    "defaultTextColor": "#F7E0E6",
+    "textBorderColor": "#3A102D",
+    "fontStyle": "Noto Sans",
+    "wallpaperPath": "wallpapers/PB.png",
     "kittyBackgroundOpacity": "0.85"
   },
   "IK": {
@@ -31,7 +31,7 @@
     "backgroundColor": "#3CA8D7",
     "defaultTextColor": "#092A5B",
     "textBorderColor": "#051D43",
-    "fontStyle": "Gohu Nerd Font",
+    "fontStyle": "Noto Sans",
     "wallpaperPath": "wallpapers/IK.png",
     "kittyBackgroundOpacity": "0.85"
   },
@@ -43,7 +43,7 @@
     "backgroundColor": "#1A2E4D",
     "defaultTextColor": "#E8DDE7",
     "textBorderColor": "#09080C",
-    "fontStyle": "Gohu Nerd Font",
+    "fontStyle": "Noto Sans",
     "wallpaperPath": "wallpapers/marcy.png",
     "kittyBackgroundOpacity": "0.85"
   }

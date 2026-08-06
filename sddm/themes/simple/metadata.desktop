@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=Simple
+Description=A small, clean QML theme for SDDM
+Author=Local
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Login.qml
+ConfigFile=theme.conf
+Theme-Id=simple
+Theme-API=2.0
+QtVersion=6

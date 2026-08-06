@@ -26,6 +26,12 @@ Quickshell-owned helper scripts live in `scripts/`:
 - `scripts/set-rofi-theme` updates the `@theme` entry in the Rofi config.
 - `scripts/set-kitty-theme` updates Kitty's Quickshell-managed theme include.
 
+### SDDM Theme
+
+The companion Qt 6 login theme lives in `sddm/themes/simple`. Its README includes
+preview and installation instructions. `ThemeManager` regenerates its
+`theme.conf` from the active palette whenever the Quickshell theme changes.
+
 ## Project Status
 
 ### Completed

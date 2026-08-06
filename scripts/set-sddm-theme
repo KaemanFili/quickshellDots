@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config_path="${1:-}"
+theme_name="${2:-}"
+font_family="${3:-}"
+wallpaper_path="${4:-}"
+primary="${5:-}"
+secondary="${6:-}"
+tertiary="${7:-}"
+background="${8:-}"
+foreground="${9:-}"
+
+if [[ -z "$config_path" || -z "$theme_name" || -z "$font_family" || -z "$wallpaper_path" || -z "$primary" || -z "$secondary" || -z "$tertiary" || -z "$background" || -z "$foreground" ]]; then
+    echo "usage: set-sddm-theme <config_path> <theme_name> <font_family> <wallpaper_path> <primary> <secondary> <tertiary> <background> <foreground>" >&2
+    exit 2
+fi
+
+normalize_color() {
+    local value="$1"
+    local fallback="$2"
+
+    if [[ "$value" =~ ^#[[:xdigit:]]{6}$ ]]; then
+        printf '%s\n' "$value"
+    else
+        printf '%s\n' "$fallback"
+    fi
+}
+
+primary="$(normalize_color "$primary" "#60a5fa")"
+secondary="$(normalize_color "$secondary" "#9ca3af")"
+tertiary="$(normalize_color "$tertiary" "#fca5a5")"
+background="$(normalize_color "$background" "#111827")"
+foreground="$(normalize_color "$foreground" "#f9fafb")"
+card_color="#e6${background#\#}"
+
+# SDDM's INI parser treats newlines as structure, so keep display names on one line.
+theme_name="${theme_name//$'\n'/ }"
+theme_name="${theme_name//$'\r'/ }"
+font_family="${font_family//$'\n'/ }"
+font_family="${font_family//$'\r'/ }"
+wallpaper_path="${wallpaper_path//$'\n'/}"
+wallpaper_path="${wallpaper_path//$'\r'/}"
+
+mkdir -p "$(dirname "$config_path")"
+tmp_file="$(mktemp "${config_path}.XXXXXX")"
+trap 'rm -f "$tmp_file"' EXIT
+
+printf '%s\n' \
+    '[General]' \
+    "backgroundImage=${wallpaper_path}" \
+    "backgroundColor=${background}" \
+    "accentColor=${primary}" \
+    "cardColor=${card_color}" \
+    "textColor=${foreground}" \
+    "mutedTextColor=${secondary}" \
+    "errorColor=${tertiary}" \
+    "fontFamily=${font_family}" \
+    "welcomeText=${theme_name}" \
+    'showHostname=true' >"$tmp_file"
+
+chmod 0644 "$tmp_file"
+mv "$tmp_file" "$config_path"
+trap - EXIT
