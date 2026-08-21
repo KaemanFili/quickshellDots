@@ -29,6 +29,7 @@ Item {
     Text {
         id: label
         text: root.text
+        font.family: root.fontStyle
         anchors.centerIn: parent
         color: root.textColor
     }

@@ -87,6 +87,7 @@ Singleton {
         setRofiTheme(themeData)
         setKittyTheme(themeData)
         setSddmTheme(themeData)
+        setHyprlandTheme(themeData)
     }
     function getCurTheme(){
         return theme(root.curTheme)
@@ -140,6 +141,25 @@ Singleton {
             themeData.backgroundColor || root.defaultTheme.backgroundColor,
             themeData.defaultTextColor || root.defaultTheme.defaultTextColor
         ])
+    }
+    function setHyprlandTheme(themeData) {
+        const primary = hyprlandColor(themeData.primaryColor, root.defaultTheme.primaryColor)
+        const secondary = hyprlandColor(themeData.secondaryColor, root.defaultTheme.secondaryColor)
+
+        hyprlandThemeSetter.exec([
+            "hyprctl",
+            "eval",
+            "hl.config({ general = { col = { active_border = { colors = { \""
+                + primary + "\", \"" + secondary
+                + "\" }, angle = 45 } } } })"
+        ])
+    }
+    function hyprlandColor(value, fallback) {
+        const color = String(value || fallback || "#444444")
+        const match = color.match(/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/)
+
+        return "rgba(" + (match ? match[1] : "444444ff")
+            + (match && match[1].length === 6 ? "ff" : "") + ")"
     }
     function themeCommandArgs(scriptPath, configPath, themePath, themeData) {
         return [
@@ -207,6 +227,18 @@ Singleton {
                 const err = text.trim()
                 if (err.length)
                     console.error("ThemeManager: failed to set SDDM theme:", err)
+            }
+        }
+    }
+
+    Process {
+        id: hyprlandThemeSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set Hyprland theme:", err)
             }
         }
     }

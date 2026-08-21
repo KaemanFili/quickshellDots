@@ -7,9 +7,21 @@
     "backgroundColor": "#43856c",
     "defaultTextColor": "#2828a5",
     "textBorderColor": "#201d1d",
-    "fontStyle": "Noto Sans",
-    "wallpaperPath": "wallpapers/retro-BMO.jpg",
+    "fontStyle": "GohuFont 14 Nerd Font",
+    "wallpaperPath": "wallpapers/retro-BMO.png",
     "kittyBackgroundOpacity": "0.85"
+  },
+  "BMO Noire": {
+    "primaryColor": "#525252",
+    "secondaryColor": "#E2E2E2",
+    "tertiaryColor": "#B0B0B0",
+    "quaternaryColor": "#C8C8C8",
+    "backgroundColor": "#0C0C0C",
+    "defaultTextColor": "#F7F7F7",
+    "textBorderColor": "#F7F7F7",
+    "fontStyle": "MesloLGLDZ Nerd Font",
+    "wallpaperPath": "wallpapers/BMO-Noire.png",
+    "kittyBackgroundOpacity": "0.88"
   },
   "PB": {
     "primaryColor": "#E53592",
@@ -19,7 +31,7 @@
     "backgroundColor": "#84245F",
     "defaultTextColor": "#F7E0E6",
     "textBorderColor": "#3A102D",
-    "fontStyle": "Noto Sans",
+    "fontStyle": "FantasqueSansM Nerd Font",
     "wallpaperPath": "wallpapers/PB.png",
     "kittyBackgroundOpacity": "0.85"
   },
@@ -31,7 +43,7 @@
     "backgroundColor": "#3CA8D7",
     "defaultTextColor": "#092A5B",
     "textBorderColor": "#051D43",
-    "fontStyle": "Noto Sans",
+    "fontStyle": "MesloLGSDZ Nerd Font",
     "wallpaperPath": "wallpapers/IK.png",
     "kittyBackgroundOpacity": "0.85"
   },
@@ -43,7 +55,7 @@
     "backgroundColor": "#1A2E4D",
     "defaultTextColor": "#E8DDE7",
     "textBorderColor": "#09080C",
-    "fontStyle": "Noto Sans",
+    "fontStyle": "MesloLGM Nerd Font",
     "wallpaperPath": "wallpapers/marcy.png",
     "kittyBackgroundOpacity": "0.85"
   }

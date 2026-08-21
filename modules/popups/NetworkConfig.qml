@@ -67,7 +67,7 @@ Item{
                     property var symbolType : networkConfig.getConnectionType(modelData.type)
 
                     text: modelData.name + " " + iconsMap.map[symbolType]
-
+                    font.family: fontFamily
                     color: textBorderColor
                 }
                 Item{ Layout.fillWidth: true}
@@ -94,6 +94,7 @@ Item{
                 Text {
                     property var symbolType : networkConfig.getConnectionType(modelData.type)
                     text: modelData.name + " " + iconsMap.map[symbolType]
+                    font.family: fontFamily
                     color: tertiaryColor
                 }
                 Item{ Layout.fillWidth: true}
@@ -166,9 +167,9 @@ Item{
 
                         visible: !modelData.inUse
 
-                        Text { text: modelData.ssid; color: textBorderColor}
-                        Text { text: modelData.security === "--" ? "Open" : modelData.security; color: textBorderColor }
-                        Text { text: modelData.bars; color: textBorderColor }
+                        Text { text: modelData.ssid; font.family: fontFamily; color: textBorderColor}
+                        Text { text: modelData.security === "--" ? "Open" : modelData.security; font.family: fontFamily; color: textBorderColor }
+                        Text { text: modelData.bars; font.family: fontFamily; color: textBorderColor }
                         Item{ Layout.fillWidth: true}
                         PopupButton {
                             Layout.preferredHeight: 20
