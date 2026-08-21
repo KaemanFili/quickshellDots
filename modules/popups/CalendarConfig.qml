@@ -28,12 +28,9 @@ Item {
         return Math.floor((currentDay - startOfYear) / 86400000) + 1
     }
 
-    function isoWeekNumber(date) {
-        const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
-        const day = target.getUTCDay() || 7
-        target.setUTCDate(target.getUTCDate() + 4 - day)
-        const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1))
-        return Math.ceil((((target - yearStart) / 86400000) + 1) / 7)
+    function daysInYear(date) {
+        const year = date.getFullYear()
+        return new Date(year, 1, 29).getMonth() === 1 ? 366 : 365
     }
 
     SystemClock {
@@ -197,8 +194,9 @@ Item {
 
         Text {
             Layout.fillWidth: true
-            text: "ISO week " + root.isoWeekNumber(clock.date)
-                + "  \u2022  Day " + root.dayOfYear(clock.date) + " of the year"
+            text: Qt.formatDateTime(clock.date, "dddd")
+                + "  \u2022  Day " + root.dayOfYear(clock.date)
+                + " of " + root.daysInYear(clock.date)
             color: tertiaryColor
             font.family: fontFamily
             horizontalAlignment: Text.AlignHCenter
