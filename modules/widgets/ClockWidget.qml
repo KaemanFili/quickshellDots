@@ -8,6 +8,7 @@ Item {
     property string textColor: ""
     property string textBorderColor: ""
     property string backgroundColor: ""
+    signal clicked()
 
     implicitHeight: clockPill.height
     implicitWidth: clockPill.width
@@ -70,5 +71,12 @@ Item {
                 font.bold: true
             }
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: clockWidget.clicked()
     }
 }

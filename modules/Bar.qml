@@ -211,6 +211,7 @@ Scope {
             textColor: root.theme.defaultTextColor
             textBorderColor: root.theme.textBorderColor
             backgroundColor: root.theme.primaryColor
+            onClicked: root.togglePopup("calendar")
           }
           
         }
