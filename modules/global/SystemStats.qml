@@ -18,6 +18,11 @@ Singleton {
     property real diskUsage: 0
     property real diskUsedBytes: 0
     property real diskTotalBytes: 0
+    property bool gpuAvailable: false
+    property real gpuUsage: 0
+    property real gpuMemoryUsage: 0
+    property real gpuMemoryUsedBytes: 0
+    property real gpuMemoryTotalBytes: 0
 
     property real previousCpuTotal: 0
     property real previousCpuIdle: 0
@@ -165,12 +170,37 @@ Singleton {
         }
     }
 
+    Process {
+        id: gpuProcess
+        command: ["sh", "-c", "if command -v nvidia-smi >/dev/null 2>&1; then nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits | head -n 1 | awk -F, '{gsub(/ /,\"\"); print $1, $2 * 1048576, $3 * 1048576}'; else best=0; for card in /sys/class/drm/card[0-9]/device; do [ -r \"$card/gpu_busy_percent\" ] || continue; total=$(cat \"$card/mem_info_vram_total\" 2>/dev/null || echo 0); if [ \"$total\" -gt \"$best\" ]; then best=$total; usage=$(cat \"$card/gpu_busy_percent\"); used=$(cat \"$card/mem_info_vram_used\" 2>/dev/null || echo 0); fi; done; [ \"$best\" -gt 0 ] && echo \"$usage $used $best\"; fi"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const fields = text.trim().split(/\s+/).map(Number)
+                if (fields.length < 3 || fields.some(Number.isNaN) || fields[2] <= 0) {
+                    root.gpuAvailable = false
+                    return
+                }
+
+                root.gpuAvailable = true
+                root.gpuUsage = root.clamp(fields[0] / 100, 0, 1)
+                root.gpuMemoryUsedBytes = fields[1]
+                root.gpuMemoryTotalBytes = fields[2]
+                root.gpuMemoryUsage = root.clamp(fields[1] / fields[2], 0, 1)
+            }
+        }
+    }
+
     Timer {
         interval: 1000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: root.refresh()
+        onTriggered: {
+            root.refresh()
+            if (!gpuProcess.running)
+                gpuProcess.running = true
+        }
     }
 
     Timer {

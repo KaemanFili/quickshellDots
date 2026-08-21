@@ -55,6 +55,21 @@ Item {
         }
 
         StatRow {
+            visible: SystemStats.gpuAvailable
+            label: "GPU"
+            value: root.percent(SystemStats.gpuUsage)
+            progress: SystemStats.gpuUsage
+        }
+
+        StatRow {
+            visible: SystemStats.gpuAvailable
+            label: "GPU memory"
+            value: root.formatBytes(SystemStats.gpuMemoryUsedBytes) + " / "
+                + root.formatBytes(SystemStats.gpuMemoryTotalBytes)
+            progress: SystemStats.gpuMemoryUsage
+        }
+
+        StatRow {
             label: "Memory"
             value: root.formatBytes(SystemStats.memoryUsedBytes) + " / "
                 + root.formatBytes(SystemStats.memoryTotalBytes)
