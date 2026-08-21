@@ -22,6 +22,20 @@ Item {
             && date.getDate() === clock.date.getDate()
     }
 
+    function dayOfYear(date) {
+        const startOfYear = Date.UTC(date.getFullYear(), 0, 1)
+        const currentDay = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+        return Math.floor((currentDay - startOfYear) / 86400000) + 1
+    }
+
+    function isoWeekNumber(date) {
+        const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+        const day = target.getUTCDay() || 7
+        target.setUTCDate(target.getUTCDate() + 4 - day)
+        const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1))
+        return Math.ceil((((target - yearStart) / 86400000) + 1) / 7)
+    }
+
     SystemClock {
         id: clock
         precision: SystemClock.Seconds
@@ -183,8 +197,8 @@ Item {
 
         Text {
             Layout.fillWidth: true
-            text: "Week " + Qt.formatDateTime(clock.date, "ww")
-                + "  \u2022  Day " + Qt.formatDateTime(clock.date, "DDD") + " of the year"
+            text: "ISO week " + root.isoWeekNumber(clock.date)
+                + "  \u2022  Day " + root.dayOfYear(clock.date) + " of the year"
             color: tertiaryColor
             font.family: fontFamily
             horizontalAlignment: Text.AlignHCenter
