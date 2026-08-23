@@ -45,7 +45,7 @@ QtObject {
             "quaternaryColor": "#7A1826",
             "backgroundColor": "#1A2E4D",
             "defaultTextColor": "#E8DDE7",
-            "textBorderColor": "#09080C",
+            "textBorderColor": "#F4EAF2",
             "fontStyle": "Gohu Nerd Font",
             "wallpaperPath": "wallpapers/marcy.png",
             "kittyBackgroundOpacity": "0.85"

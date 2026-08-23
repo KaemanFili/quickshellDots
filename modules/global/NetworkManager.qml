@@ -55,7 +55,11 @@ Singleton {
         const sec = (ap?.security ?? "").trim()
         const ifname = ap?.device
 
-        const args = ["nmcli", "dev", "wifi", "connect", ssid, "password", password, ifname, wlan0]
+        const args = ["nmcli", "dev", "wifi", "connect", ssid]
+        if (sec !== "" && sec !== "--")
+            args.push("password", password)
+        if (ifname)
+            args.push("ifname", ifname)
         nmcliWifiConnect.exec(args)
     }
     function refresh(){
@@ -199,6 +203,7 @@ Singleton {
         stdout: StdioCollector {
             onStreamFinished: {
                 console.log("wifi connect stdout:", text.trim())
+                refresh()
             }    
         }
 
