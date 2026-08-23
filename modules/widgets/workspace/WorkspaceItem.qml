@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 
 Item {
@@ -47,6 +48,11 @@ Item {
             implicitHeight: 18
             source: root.appIcon
             visible: root.active && source !== ""
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                colorization: 1
+                colorizationColor: root.activeColor
+            }
         }
 
         Text {
