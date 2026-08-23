@@ -6,6 +6,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 import "widgets"
+import "widgets/workspace"
 import "generics"
 import "util"
 import "global"
