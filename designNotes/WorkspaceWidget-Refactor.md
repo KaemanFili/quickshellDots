@@ -32,12 +32,14 @@ flowchart TD
     WI -->|click| DISPATCH[Hyprland workspace dispatch]
 ```
 
-The components live together in a dedicated directory:
+The components live together in a dedicated directory, while this design note is kept with the project's other refactor documentation:
 
 ```text
 widgets/workspace/
 ├── WorkspaceWidget.qml
-├── WorkspaceItem.qml
+└── WorkspaceItem.qml
+
+designNotes/
 └── WorkspaceWidget-Refactor.md
 ```
 

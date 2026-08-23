@@ -5,6 +5,7 @@ Item {
     id: root
 
     property string popupName: ""
+    property var popupController: null
     property string fontFamily: ""
     property string textColor: ""
     property string textBorderColor: ""
@@ -28,8 +29,8 @@ Item {
 
         onClicked: {
             root.clicked()
-            if (root.popupName !== "")
-                activePopup = activePopup === root.popupName ? "" : root.popupName
+            if (root.popupName !== "" && root.popupController)
+                root.popupController.togglePopup(root.popupName)
         }
     }
 }

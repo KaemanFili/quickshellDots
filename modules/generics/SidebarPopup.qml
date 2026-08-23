@@ -9,6 +9,7 @@ PopupWindow {
     grabFocus: false
 
     required property QsWindow anchorWindow
+    required property var popupController
     property real anchorX: 0
     property real anchorY: anchorWindow.height / 2
 
@@ -26,6 +27,9 @@ PopupWindow {
     property string tertiaryColor: theme.tertiaryColor
     property int maximumPopupWidth: 450
     property int popupScreenMargin: 40
+    property int contentPadding: 15
+    property int cornerRadius: 16
+    property int animationDuration: 300
     
     visible: displayedPopup !== ""
     
@@ -41,69 +45,29 @@ PopupWindow {
         rect.y: (popup.anchorWindow.height - popup.height) / 2
     }
 
-    Rectangle {
+    SidebarPopupCard {
         id: popupCard
 
         anchors.right: parent.right
-    anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: popup.anchorY - (popup.anchorWindow.height / 2)
 
-        width: Math.min(popup.width, popupLoader.implicitWidth + 30)
-        height: Math.min(popup.height, popupLoader.implicitHeight + 30)
-
+        contentSource: popupSources.map[popup.displayedPopup] || ""
+        maximumWidth: popup.width
+        maximumHeight: popup.height
+        revealProgress: popup.revealProgress
+        contentPadding: popup.contentPadding
+        cornerRadius: popup.cornerRadius
+        animationDuration: popup.animationDuration
         color: popup.backgroundColor
 
-        topLeftRadius: 16
-        bottomLeftRadius: 16
-        topRightRadius: 0
-        bottomRightRadius: 0
-        clip: true
-
-        Behavior on width {
-            NumberAnimation {
-                duration: 300
-                easing.type: Easing.OutCubic
-            }
-        }
-
-        Behavior on height {
-            NumberAnimation {
-                duration: 300
-                easing.type: Easing.OutCubic
-            }
-        }
-
-        transform: [
-            Translate {
-                x: (1 - popup.revealProgress) * popupCard.width
-            },
-            Scale {
-                origin.x: popupCard.width / 2
-                origin.y: popupCard.height / 2
-            }
-        ]
-        
-        Item {
-            id: contentWrapper
-            anchors.fill: parent
-            anchors.margins: 15
-            clip: true
-
-            Loader {
-                id: popupLoader
-                anchors.centerIn: parent
-                source: popupSources.map[popup.displayedPopup] || ""
-
-                onLoaded: popup.finishLoadingPopup()
-            }
-        }
+        onContentLoaded: popup.handleContentLoaded()
     }
 
     //Animation State and Transitions
 
     property real revealProgress: 0
-    property real verticalRevealProgress: 0
-    property string requestedPopup: activePopup
+    property string requestedPopup: popupController.activePopup
     property string displayedPopup: ""
     property bool animateNextLoad: false
 
@@ -131,7 +95,7 @@ PopupWindow {
             revealProgress = 1
     }
 
-    function finishLoadingPopup() {
+    function handleContentLoaded() {
         if (animateNextLoad) {
             animateNextLoad = false
             openAnimation.restart()
@@ -140,28 +104,22 @@ PopupWindow {
         }
     }
 
-    ParallelAnimation {
+    NumberAnimation {
         id: openAnimation
-
-        NumberAnimation {
-            target: popup
-            property: "revealProgress"
-            to: 1
-            duration: 300
-            easing.type: Easing.OutCubic
-        }
+        target: popup
+        property: "revealProgress"
+        to: 1
+        duration: popup.animationDuration
+        easing.type: Easing.OutCubic
     }
 
-    ParallelAnimation {
+    NumberAnimation {
         id: closeAnimation
-
-        NumberAnimation {
-            target: popup
-            property: "revealProgress"
-            to: 0
-            duration: 300
-            easing.type: Easing.InCubic
-        }
+        target: popup
+        property: "revealProgress"
+        to: 0
+        duration: popup.animationDuration
+        easing.type: Easing.InCubic
 
         onFinished: {
             if (popup.requestedPopup === "") {

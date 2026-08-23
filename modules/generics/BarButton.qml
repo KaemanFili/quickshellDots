@@ -10,6 +10,7 @@ BarButtonBase {
 
     Text {
         id: icon
+        anchors.centerIn: parent
         text: labelIcon
         font.pixelSize: 20
         font.family: fontFamily
