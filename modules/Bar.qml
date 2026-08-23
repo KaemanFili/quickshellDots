@@ -206,13 +206,13 @@ Scope {
           }
           // the ClockWidget type we just created
           ClockWidget {
+            popupName: "calendar"
             Layout.alignment: Qt.AlignHCenter
             Layout.bottomMargin: 2
             fontFamily: root.theme.fontStyle
             textColor: root.theme.defaultTextColor
             textBorderColor: root.theme.textBorderColor
             backgroundColor: root.theme.primaryColor
-            onClicked: root.togglePopup("calendar")
           }
           
         }

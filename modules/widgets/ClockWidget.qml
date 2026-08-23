@@ -1,14 +1,12 @@
 import QtQuick
 import Quickshell
+import "../generics"
 
-Item {
+BarButtonBase {
     id: clockWidget
 
-    property string fontFamily: ""
-    property string textColor: ""
-    property string textBorderColor: ""
     property string backgroundColor: ""
-    signal clicked()
+    cursorShape: Qt.PointingHandCursor
 
     implicitHeight: clockPill.height
     implicitWidth: clockPill.width
@@ -35,11 +33,12 @@ Item {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: Qt.formatDateTime(clock.date, "hh")
-                color: textColor
+                color: clockWidget.interactiveTextColor
                 horizontalAlignment: Text.AlignHCenter
                 font.family: fontFamily
                 font.pixelSize: 16
                 font.bold: true
+                Behavior on color { ColorAnimation { duration: 100 } }
             }
 
             Rectangle {
@@ -53,30 +52,26 @@ Item {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: Qt.formatDateTime(clock.date, "mm")
-                color: textColor
+                color: clockWidget.interactiveTextColor
                 horizontalAlignment: Text.AlignHCenter
                 font.family: fontFamily
                 font.pixelSize: 16
                 font.bold: true
+                Behavior on color { ColorAnimation { duration: 100 } }
             }
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: Qt.formatDateTime(clock.date, "ddd")
-                color: textColor
+                color: clockWidget.interactiveTextColor
                 opacity: 0.75
                 horizontalAlignment: Text.AlignHCenter
                 font.family: fontFamily
                 font.pixelSize: 8
                 font.bold: true
+                Behavior on color { ColorAnimation { duration: 100 } }
             }
         }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: clockWidget.clicked()
-    }
 }
