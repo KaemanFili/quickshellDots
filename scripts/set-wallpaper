@@ -3,6 +3,7 @@ set -euo pipefail
 
 wallpaper_path="${1:-}"
 fit_mode="${2:-cover}"
+apply_mode="${3:-restart}"
 config_home="${XDG_CONFIG_HOME:-${HOME:-}/.config}"
 hyprpaper_config="${HYPRPAPER_CONFIG:-${config_home}/hypr/hyprpaper.conf}"
 log_file="${QUICKSHELL_WALLPAPER_LOG:-/tmp/quickshell-wallpaper.log}"
@@ -12,7 +13,12 @@ log() {
 }
 
 if [[ -z "$wallpaper_path" ]]; then
-    echo "usage: set-wallpaper <path> [fit_mode]" >&2
+    echo "usage: set-wallpaper <path> [fit_mode] [restart|persist-only]" >&2
+    exit 2
+fi
+
+if [[ "$apply_mode" != "restart" && "$apply_mode" != "persist-only" ]]; then
+    echo "set-wallpaper: invalid apply mode: $apply_mode" >&2
     exit 2
 fi
 
@@ -88,4 +94,6 @@ restart_hyprpaper() {
 write_hyprpaper_config
 log "wrote $hyprpaper_config for $wallpaper_path"
 
-restart_hyprpaper
+if [[ "$apply_mode" == "restart" ]]; then
+    restart_hyprpaper
+fi

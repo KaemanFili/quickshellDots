@@ -26,6 +26,21 @@ Singleton {
     property string curTheme: ""
     property bool themeMapReady: false
     property bool themeStateReady: false
+    property bool themeTransitionsEnabled: false
+    property int themeTransitionDuration: 350
+
+    // Components bind to these live values rather than the raw JSON object. A
+    // palette change therefore produces one synchronized transition everywhere.
+    property color primaryColor: defaultTheme.primaryColor
+    property color secondaryColor: defaultTheme.secondaryColor
+    property color tertiaryColor: defaultTheme.tertiaryColor
+    property color quaternaryColor: defaultTheme.quaternaryColor
+    property color backgroundColor: defaultTheme.backgroundColor
+    property color defaultTextColor: defaultTheme.defaultTextColor
+    property color textBorderColor: defaultTheme.textBorderColor
+    property string fontStyle: defaultTheme.fontStyle
+    property string wallpaperPath: defaultTheme.wallpaperPath
+    property string kittyBackgroundOpacity: defaultTheme.kittyBackgroundOpacity
     // The live map of themes (name -> object)
     property var map: ({})
 
@@ -74,7 +89,11 @@ Singleton {
 
         const themeData = theme(themeName)
         root.curTheme = themeName
+        syncVisualTheme(themeData)
         applyTheme(themeData)
+
+        if (!root.themeTransitionsEnabled)
+            Qt.callLater(() => root.themeTransitionsEnabled = true)
     }
     function initializeTheme() {
         if (!root.themeMapReady || !root.themeStateReady)
@@ -90,14 +109,17 @@ Singleton {
         setHyprlandTheme(themeData)
     }
     function getCurTheme(){
-        return theme(root.curTheme)
+        return root
     }
     function updateMap() {
         try {
             const text = file.text()
             root.map = text ? JSON.parse(text) : {}
-            if (root.curTheme !== "")
-                applyTheme(theme(root.curTheme))
+            if (root.curTheme !== "") {
+                const themeData = theme(root.curTheme)
+                syncVisualTheme(themeData)
+                applyTheme(themeData)
+            }
         } catch (e) {
             console.error("ThemeStore: failed to parse JSON:", e)
             root.map = {}
@@ -108,13 +130,30 @@ Singleton {
         //console.log("grabbing theme with name: "+ name)
         return root.map[name] || root.defaultTheme
     }
+    function syncVisualTheme(themeData) {
+        root.primaryColor = themeData.primaryColor || root.defaultTheme.primaryColor
+        root.secondaryColor = themeData.secondaryColor || root.defaultTheme.secondaryColor
+        root.tertiaryColor = themeData.tertiaryColor || root.defaultTheme.tertiaryColor
+        root.quaternaryColor = themeData.quaternaryColor || root.defaultTheme.quaternaryColor
+        root.backgroundColor = themeData.backgroundColor || root.defaultTheme.backgroundColor
+        root.defaultTextColor = themeData.defaultTextColor || root.defaultTheme.defaultTextColor
+        root.textBorderColor = themeData.textBorderColor || root.defaultTheme.textBorderColor
+        root.fontStyle = themeData.fontStyle || root.defaultTheme.fontStyle
+        root.wallpaperPath = themeData.wallpaperPath || root.defaultTheme.wallpaperPath
+        root.kittyBackgroundOpacity = themeData.kittyBackgroundOpacity || root.defaultTheme.kittyBackgroundOpacity
+    }
     function setWallpaper(themeData) {
         const wallpaperPath = themeData.wallpaperPath || root.defaultTheme.wallpaperPath
 
         if (!wallpaperPath)
             return
 
-        wallpaperSetter.exec([root.wallpaperSetterPath, resolveRepoPath(wallpaperPath)])
+        wallpaperSetter.exec([
+            root.wallpaperSetterPath,
+            resolveRepoPath(wallpaperPath),
+            "cover",
+            "persist-only"
+        ])
     }
     function setRofiTheme(themeData) {
         if (!root.rofiConfigPath || !root.rofiThemePath)
@@ -181,6 +220,40 @@ Singleton {
         const c = Qt.color(colorString)
         const v = Math.max(0, Math.min(1, c.hsvValue * amount))
         return Qt.hsva(c.hsvHue, c.hsvSaturation, v, c.a)
+    }
+
+    Behavior on primaryColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on secondaryColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on tertiaryColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on quaternaryColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on backgroundColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on defaultTextColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+    Behavior on textBorderColor {
+        enabled: root.themeTransitionsEnabled
+        ThemeColorAnimation {}
+    }
+
+    component ThemeColorAnimation: ColorAnimation {
+        duration: root.themeTransitionDuration
+        easing.type: Easing.InOutCubic
     }
 
     Process {
