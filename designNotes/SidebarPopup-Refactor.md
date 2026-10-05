@@ -116,13 +116,13 @@ The card uses a normalized `revealProgress` value:
 | `0` | Card translated completely outside the popup surface |
 | `1` | Card in its final visible position |
 
-The card converts that state into a horizontal translation:
+The card converts that state into a negative right-anchor margin:
 
 ```qml
-x: (1 - root.revealProgress) * root.width
+anchors.rightMargin: -(1 - root.revealProgress) * root.width
 ```
 
-This keeps the state machine independent from the card's current width, including while different popup contents cause its size to animate.
+The parent anchors the card to the right edge. Changing the margin moves the card's actual bounds, so `Region.item` updates the pointer input region throughout opening and closing. A `Translate` transform does not notify the region and can leave visible parts of the popup click-through. This keeps the state machine independent from the card's current width, including while different popup contents cause its size to animate.
 
 ## Named presentation properties
 

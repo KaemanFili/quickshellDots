@@ -94,7 +94,7 @@ The shortcuts popup could become dynamic by reading Hyprland configuration files
 
 ### Theme Changer
 
-Theme changes now update Quickshell, wallpaper, Rofi, and Kitty. Theme colors live in `config/themes.json`; Rofi and Kitty active theme files are generated under the user's config directory when a theme is applied. Helper scripts live under `scripts`.
+Theme changes now update Quickshell, wallpaper, terminal ASCII art, Rofi, and Kitty. Theme colors and each theme's optional `asciiPath` live in `config/themes.json`; the selected art is copied to `~/.cache/quickshell/current-ascii.txt` for Fastfetch. If the property is absent or its file does not exist, Fastfetch uses its original logo. Rofi and Kitty active theme files are generated under the user's config directory. Helper scripts live under `scripts`.
 
 ### Visual Polish
 

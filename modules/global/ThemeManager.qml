@@ -16,6 +16,8 @@ Singleton {
     property string rofiThemeSetterPath: root.repoPath + "/scripts/set-rofi-theme"
     property string kittyThemeSetterPath: root.repoPath + "/scripts/set-kitty-theme"
     property string sddmThemeSetterPath: root.repoPath + "/scripts/set-sddm-theme"
+    property string asciiArtSetterPath: root.repoPath + "/scripts/set-ascii-art"
+    property string asciiArtPath: userHome ? userHome + "/.cache/quickshell/current-ascii.txt" : ""
     property string sddmThemeConfigPath: root.repoPath + "/sddm/themes/simple/theme.conf"
     property string rofiConfigPath: userHome ? userHome + "/.config/rofi/config.rasi" : ""
     property string rofiThemePath: userHome ? userHome + "/.config/rofi/quickshell-current-theme.rasi" : ""
@@ -40,6 +42,7 @@ Singleton {
     property color textBorderColor: defaultTheme.textBorderColor
     property string fontStyle: defaultTheme.fontStyle
     property string wallpaperPath: defaultTheme.wallpaperPath
+    property string asciiPath: defaultTheme.asciiPath
     property string kittyBackgroundOpacity: defaultTheme.kittyBackgroundOpacity
     // The live map of themes (name -> object)
     property var map: ({})
@@ -55,6 +58,7 @@ Singleton {
         textBorderColor: "#000000",
         fontStyle: "Noto Sans",
         wallpaperPath: "wallpapers/retro-BMO.jpg",
+        asciiPath: "ascii/BMO.txt",
         kittyBackgroundOpacity: "1.0"
     })
     function localPath(url) {
@@ -84,8 +88,10 @@ Singleton {
         if (themeState.currentTheme !== themeName)
             themeState.currentTheme = themeName
 
-        if (root.curTheme === themeName)
+        if (root.curTheme === themeName) {
+            applyTheme(theme(themeName))
             return
+        }
 
         const themeData = theme(themeName)
         root.curTheme = themeName
@@ -103,6 +109,7 @@ Singleton {
     }
     function applyTheme(themeData) {
         setWallpaper(themeData)
+        setAsciiArt(themeData)
         setRofiTheme(themeData)
         setKittyTheme(themeData)
         setSddmTheme(themeData)
@@ -140,6 +147,7 @@ Singleton {
         root.textBorderColor = themeData.textBorderColor || root.defaultTheme.textBorderColor
         root.fontStyle = themeData.fontStyle || root.defaultTheme.fontStyle
         root.wallpaperPath = themeData.wallpaperPath || root.defaultTheme.wallpaperPath
+        root.asciiPath = themeData.asciiPath || root.defaultTheme.asciiPath
         root.kittyBackgroundOpacity = themeData.kittyBackgroundOpacity || root.defaultTheme.kittyBackgroundOpacity
     }
     function setWallpaper(themeData) {
@@ -153,6 +161,18 @@ Singleton {
             resolveRepoPath(wallpaperPath),
             "cover",
             "persist-only"
+        ])
+    }
+    function setAsciiArt(themeData) {
+        const asciiPath = themeData.asciiPath || ""
+
+        if (!root.asciiArtPath)
+            return
+
+        asciiArtSetter.exec([
+            root.asciiArtSetterPath,
+            asciiPath ? resolveRepoPath(asciiPath) : "",
+            root.asciiArtPath
         ])
     }
     function setRofiTheme(themeData) {
@@ -264,6 +284,18 @@ Singleton {
                 const err = text.trim()
                 if (err.length)
                     console.error("ThemeManager: failed to set wallpaper:", err)
+            }
+        }
+    }
+
+    Process {
+        id: asciiArtSetter
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const err = text.trim()
+                if (err.length)
+                    console.error("ThemeManager: failed to set ASCII art:", err)
             }
         }
     }

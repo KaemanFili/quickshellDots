@@ -37,9 +37,9 @@ Rectangle {
         }
     }
 
-    transform: Translate {
-        x: (1 - root.revealProgress) * root.width
-    }
+    // Move the actual bounds so Region.item tracks the reveal animation.
+    // A Translate transform moves the card without updating its input region.
+    anchors.rightMargin: -(1 - root.revealProgress) * root.width
 
     Item {
         anchors.fill: parent

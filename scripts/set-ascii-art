@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source_path="${1:-}"
+destination_path="${2:-}"
+
+if [[ -z "$destination_path" ]]; then
+    echo "usage: set-ascii-art <source_path> <destination_path>" >&2
+    exit 2
+fi
+
+mkdir -p "$(dirname "$destination_path")"
+destination_tmp="$(mktemp "${destination_path}.XXXXXX")"
+trap 'rm -f "$destination_tmp"' EXIT
+
+if [[ -n "$source_path" && -f "$source_path" ]]; then
+    cp -- "$source_path" "$destination_tmp"
+else
+    # An empty managed file tells the shell to use Fastfetch's original logo.
+    : >"$destination_tmp"
+fi
+chmod 0644 "$destination_tmp"
+mv -- "$destination_tmp" "$destination_path"

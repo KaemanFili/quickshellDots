@@ -9,6 +9,7 @@
     "textBorderColor": "#201d1d",
     "fontStyle": "GohuFont 14 Nerd Font",
     "wallpaperPath": "wallpapers/retro-BMO.png",
+    "asciiPath": "ascii/BMO.txt",
     "kittyBackgroundOpacity": "0.85"
   },
   "BMO Noire": {
@@ -21,6 +22,7 @@
     "textBorderColor": "#F7F7F7",
     "fontStyle": "MesloLGLDZ Nerd Font",
     "wallpaperPath": "wallpapers/BMO-Noire.png",
+    "asciiPath": "ascii/Noir.txt",
     "kittyBackgroundOpacity": "0.88"
   },
   "PB": {
@@ -33,6 +35,7 @@
     "textBorderColor": "#3A102D",
     "fontStyle": "FantasqueSansM Nerd Font",
     "wallpaperPath": "wallpapers/PB.png",
+    "asciiPath": "ascii/PB.txt",
     "kittyBackgroundOpacity": "0.85"
   },
   "IK": {
@@ -45,6 +48,7 @@
     "textBorderColor": "#051D43",
     "fontStyle": "MesloLGSDZ Nerd Font",
     "wallpaperPath": "wallpapers/IK.png",
+    "asciiPath": "ascii/IK.txt",
     "kittyBackgroundOpacity": "0.85"
   },
   "Marcy": {
@@ -57,6 +61,7 @@
     "textBorderColor": "#F4EAF2",
     "fontStyle": "MesloLGM Nerd Font",
     "wallpaperPath": "wallpapers/marcy.png",
+    "asciiPath": "ascii/Marcy.txt",
     "kittyBackgroundOpacity": "0.85"
   }
 }
