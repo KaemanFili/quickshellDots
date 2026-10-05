@@ -13,7 +13,7 @@ Item{
     id: audioConfig 
 
     implicitWidth: 400
-	implicitHeight: 200
+    implicitHeight: Math.max(200, audioLayout.implicitHeight)
 
     readonly property PwNode sink: Pipewire.defaultAudioSink
     readonly property PwNode mic:  Pipewire.defaultAudioSource
@@ -59,7 +59,11 @@ Item{
         color: backgroundColor
         width: parent.width
         ColumnLayout {
-            anchors.fill: parent
+            id: audioLayout
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            spacing: 12
             Text { 
                 text: "Audio"
                 color: primaryColor
@@ -97,7 +101,7 @@ Item{
             }
             RowLayout {
                 spacing: 8
-                width: parent.width
+                Layout.fillWidth: true
 
                 Text {
                     minimumPixelSize:30
@@ -181,7 +185,7 @@ Item{
             }
             RowLayout {
                 spacing: 8
-                width: parent.width
+                Layout.fillWidth: true
 
                 Text {
                     minimumPixelSize:30
@@ -236,6 +240,15 @@ Item{
 
                 }
                 
+            }
+            AudioVisualizer {
+                Layout.fillWidth: true
+                sink: audioConfig.sink
+                barColor: primaryColor
+                accentColor: secondaryColor
+                labelColor: fontColor
+                panelColor: backgroundColor
+                fontName: fontFamily
             }
         }
     }

@@ -1,4 +1,6 @@
 import QtQuick
+// Register popup components with Quickshell's scanner before Loader resolves them.
+import "../popups"
 
 QtObject {
      // Map popup names to QML file paths

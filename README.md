@@ -6,6 +6,18 @@ This setup is currently developed on CachyOS, so it should be a reasonable fit f
 
 ## Configuration
 
+### Dependencies
+
+The audio visualizer requires [CAVA](https://github.com/karlstav/cava) with PipeWire support.
+On CachyOS or Arch Linux, install it with:
+
+```sh
+sudo pacman -S --needed cava
+```
+
+Quickshell reads CAVA's spectrum output directly using `config/cava-visualizer.conf`.
+The visualizer runs only while its section is expanded and the audio popup is open.
+
 ### Environment Variables
 
 | Variable | Required | Description |

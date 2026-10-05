@@ -7,6 +7,7 @@ ColumnLayout {
 
     property string title: ""
     property int count: 0
+    property bool showCount: true
     property color titleColor: "white"
     property string fontName: "sans-serif"
     property bool expanded: true
@@ -30,7 +31,7 @@ ColumnLayout {
             }
             Text {
                 Layout.fillWidth: true
-                text: section.title + " (" + section.count + ")"
+                text: section.title + (section.showCount ? " (" + section.count + ")" : "")
                 color: section.titleColor
                 font.family: section.fontName
                 font.pixelSize: 15
